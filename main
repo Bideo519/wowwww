@@ -402,7 +402,7 @@ triggerbotlabel.RichText = true
 local hitboxlabel = Instance.new("TextLabel")
 hitboxlabel.Name = "Hitboxlabel"
 hitboxlabel.Parent = Frame
-hitboxlabel.Text = "Hitbox (F7) <font color='#FF0000'>OFF</font>"
+hitboxlabel.Text = "Hitbox (K) <font color='#FF0000'>OFF</font>"
 hitboxlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 hitboxlabel.TextScaled = true
 hitboxlabel.Size = UDim2.new(0.3, 0,0.2, 0)
@@ -442,12 +442,8 @@ fovtextbox.FocusLost:Connect(function()
 	
 	if typeof(newfov) == "number" then
 		fov = newfov
+		camera.FieldOfView = fov
 	end
-end)
-
-RS.Heartbeat:Connect(function()
-	fovlabel.Text = "FOV:"
-	camera.FieldOfView = fov
 end)
 
 local weapons = RS2:FindFirstChild("Weapons") or RS2:FindFirstChild("Guns") or RS2:FindFirstChild("GunStats")
@@ -464,37 +460,6 @@ if not weapons then
 end
 
 RS.Heartbeat:Connect(function()
-	
-	if ThirteenthTrigger == true then
-	
-		for _, plrs in pairs(game.Players:GetPlayers()) do
-
-			if plrs.Name == game.Players.LocalPlayer.Name then continue end
-
-			local char = plrs.Character or plrs.CharacterAdded:Wait()
-
-			local head = char:FindFirstChild("Head")
-
-			if head then
-				head.Size = Vector3.new(6, 6, 6)
-				head.Transparency = 0.5
-				head.CanCollide = false
-			end
-		end
-	else
-		for _, plrs in pairs(game.Players:GetPlayers()) do
-			local char = plrs.Character or plrs.CharacterAdded:Wait()
-			local head = char:FindFirstChild("Head")
-			if head then
-				head.Size = Vector3.new(1, 1, 1)
-				head.Transparency = 0
-				head.CanCollide = true
-			end
-		end
-	end
-end)
-
-RS.Heartbeat:Connect(function()
 	if TwelvethTrigger == true then
 		local target = mouse.Target
 		if target and target.Parent then
@@ -507,9 +472,9 @@ RS.Heartbeat:Connect(function()
 					end
 					task.wait()
 					local VirtualInput = game:GetService("VirtualInputManager")
-					VirtualInput:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+					VirtualInput:SendMouseButtonEvent(0, 0, 0, true, game, game.Players.LocalPlayer.Character.Humanoid.JumpPower)
 					task.wait()
-					VirtualInput:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+					VirtualInput:SendMouseButtonEvent(0, 0, 0, false, game, game.Players.LocalPlayer.Character.Humanoid.JumpPower)
 				end
 			end
 		end
@@ -571,11 +536,30 @@ local function getClosestEnemy()
 	return closest
 end
 
-
-
 local function Hitbox(stat)
 	if stat == true then
-		
+		for _, plrs in pairs(game.Players:GetPlayers()) do
+			local char = plrs.Character
+			local head = char and char:FindFirstChild("Head")
+			if head and head.Size ~= Vector3.new(1, 1, 1) then
+				head.Size = Vector3.new(1, 1, 1)
+				head.Transparency = 0
+				head.CanCollide = true
+			end
+		end
+	else
+		for _, plrs in pairs(game.Players:GetPlayers()) do
+			if plrs == game.Players.LocalPlayer then continue end
+
+			local char = plrs.Character
+			local head = char and char:FindFirstChild("Head")
+
+			if head then
+				head.Size = Vector3.new(6, 6, 6)
+				head.Transparency = 0.5
+				head.CanCollide = false
+			end
+		end
 	end
 end
 
