@@ -1114,13 +1114,13 @@ UIS.InputBegan:Connect(function(input, gameProcessed)
 		triggerbotlabel.Text = "Triggerbot (F4) <font color='#FF0000'>OFF</font>"
 	elseif input.KeyCode == Enum.KeyCode.Insert and ScreenGui.Enabled == true then
 		ScreenGui.Enabled = false
-	elseif input.KeyCode == Enum.KeyCode.F7 and ThirteenthTrigger == false then
+	elseif input.KeyCode == Enum.KeyCode.K and ThirteenthTrigger == false then
 		ThirteenthTrigger = true
-		hitboxlabel.Text = "Hitbox (F7) <font color='#00FF00'>ON</font>"
+		hitboxlabel.Text = "Hitbox (K) <font color='#00FF00'>ON</font>"
 		Hitbox(true)
-	elseif input.KeyCode == Enum.KeyCode.F7 and ThirteenthTrigger == true then
+	elseif input.KeyCode == Enum.KeyCode.K and ThirteenthTrigger == true then
 		ThirteenthTrigger = false
-		hitboxlabel.Text = "Hitbox (F7) <font color='#FF0000'>OFF</font>"
+		hitboxlabel.Text = "Hitbox (K) <font color='#FF0000'>OFF</font>"
 		Hitbox(false)
 	elseif input.KeyCode == Enum.KeyCode.Insert and ScreenGui.Enabled == false then
 		ScreenGui.Enabled = true
