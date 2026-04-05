@@ -1,0 +1,1265 @@
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("RunService")
+local RS2 = game:GetService("ReplicatedStorage")
+local camera = workspace.CurrentCamera
+local mouse = game.Players.LocalPlayer:GetMouse()
+
+local Trigger = false
+local SecondTrigger = false
+local ThirdTrigger = false
+local FourthTrigger = false
+local FifthTrigger = false
+local SixthTrigger = false
+local SeventhTrigger = false
+local EightthTrigger = false
+local NinthTrigger = false
+local TenthTrigger = false
+local EleventhTrigger = false
+local TwelvethTrigger = false
+local ThirteenthTrigger = false
+
+local fov = camera.FieldOfView
+
+local End = false
+
+local jumping = false
+local CanDoubleJump = false
+
+local OriginalPosition = nil
+local SafeMode = false
+local hpriority = false
+
+local fly = false
+local OriginalSpeed = nil
+local OriginalJumpPower = nil
+
+local TargetPart = "Head"
+local connection = nil
+local smoothness = 0.3
+local wallCheck = true
+local teamCheck = true
+local maxDistance = 1000
+local aimbotfov = 200
+
+local TriggerDelay = 0.001
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "CheatGui"
+ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ResetOnSpawn = false
+
+local Frame = Instance.new("Frame")
+Frame.Name = "FunctionFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+Frame.Size = UDim2.new(0.499, 0,0.3, 0)
+Frame.Position = UDim2.new(0.25, 0,0.349, 0)
+Frame.BackgroundTransparency = 0.1
+Frame.Visible = true
+
+local SecondFrame = Instance.new("Frame")
+SecondFrame.Name = "SecondFunctionFrame"
+SecondFrame.Parent = ScreenGui
+SecondFrame.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+SecondFrame.Size = UDim2.new(0.499, 0,0.3, 0)
+SecondFrame.Position = UDim2.new(0.25, 0,0.349, 0)
+SecondFrame.BackgroundTransparency = 0.1
+SecondFrame.Visible = false
+
+local TextLabelNothing = Instance.new("TextLabel")
+TextLabelNothing.Name = "TextLabelNothing"
+TextLabelNothing.Parent = SecondFrame
+TextLabelNothing.Text = "There's nothing here yet! :("
+TextLabelNothing.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabelNothing.TextScaled = true
+TextLabelNothing.BackgroundTransparency = 1
+TextLabelNothing.RichText = true
+TextLabelNothing.Position = UDim2.new(0.397, 0,0.42, 0)
+TextLabelNothing.Size = UDim2.new(0, 200,0, 50)
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = SecondFrame
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local ThirdFrame = Instance.new("Frame")
+ThirdFrame.Name = "ThirdFunctionFrame"
+ThirdFrame.Parent = ScreenGui
+ThirdFrame.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+ThirdFrame.Size = UDim2.new(0.499, 0,0.3, 0)
+ThirdFrame.Position = UDim2.new(0.25, 0,0.349, 0)
+ThirdFrame.BackgroundTransparency = 0.1
+ThirdFrame.Visible = false
+
+local TextLabelNothing = Instance.new("TextLabel")
+TextLabelNothing.Name = "TextLabelNothing"
+TextLabelNothing.Parent = ThirdFrame
+TextLabelNothing.Text = "There's nothing here yet! :("
+TextLabelNothing.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabelNothing.TextScaled = true
+TextLabelNothing.BackgroundTransparency = 1
+TextLabelNothing.RichText = true
+TextLabelNothing.Position = UDim2.new(0.397, 0,0.42, 0)
+TextLabelNothing.Size = UDim2.new(0, 200,0, 50)
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = ThirdFrame
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local FourthFrame = Instance.new("Frame")
+FourthFrame.Name = "FourthFunctionFrame"
+FourthFrame.Parent = ScreenGui
+FourthFrame.BackgroundColor3 = Color3.fromRGB(59, 59, 59)
+FourthFrame.Size = UDim2.new(0.499, 0,0.3, 0)
+FourthFrame.Position = UDim2.new(0.25, 0,0.349, 0)
+FourthFrame.BackgroundTransparency = 0.1
+FourthFrame.Visible = false
+
+local FAQTextLabel = Instance.new("TextLabel")
+FAQTextLabel.Name = "FAQTextLabel"
+FAQTextLabel.Parent = FourthFrame
+FAQTextLabel.Text = "Hi! this is the cheat BaSs0kWl 1.4. I am a lone developer and I am developing this cheat alone (do not pay attention to the rough interface, I am too lazy to do it - the main thing is the functions) So at the moment, there are some bugs on version 1.4 (of course I'm trying to fix them): 1) Do not turn on the functions at the time of death! The cheat may get bogged down and you will have to restart it! 2) To close the cheat completely, press the Delete button on the keyboard, but before that turn off all functions because the game can get bogged down! 3) Do not turn on the cheat several times, because if you do, the HVH Weapons function will be blocked! 4) Turn on HVH Weapons carefully. This feature is very aggressive and can get bogged down at the moment of switching on/off and you will have to completely re-enter the game in order for this function to work in the future."
+FAQTextLabel.TextWrapped = true
+FAQTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+FAQTextLabel.BackgroundTransparency = 1
+FAQTextLabel.Font = Enum.Font.Oswald
+FAQTextLabel.TextScaled = true
+FAQTextLabel.Size = UDim2.new(0, 925,0, 313)
+FAQTextLabel.Position = UDim2.new(0.017, 0,0.015, 0)
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = FourthFrame
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local CheatName = Instance.new("TextLabel")
+CheatName.Name = "CheatName"
+CheatName.Parent = ScreenGui
+CheatName.Text = "Script: [ BaSs0kWl ] by _dirforsuc_"
+CheatName.TextColor3 = Color3.fromRGB(255, 255, 255)
+CheatName.TextScaled = true
+CheatName.Size = UDim2.new(0, 1125,0, 50)
+CheatName.Position = UDim2.new(0.24, 0,0.3, 0)
+CheatName.FontFace.Weight = Enum.FontWeight.Bold
+CheatName.Font = Enum.Font.Michroma
+CheatName.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
+CheatName.FontFace.Style = Enum.FontStyle.Italic
+CheatName.BackgroundTransparency = 0.2
+
+local FunctionsButton = Instance.new("TextButton")
+FunctionsButton.Name = "FunctionsButton"
+FunctionsButton.Parent = ScreenGui
+FunctionsButton.Text = "Functions"
+FunctionsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FunctionsButton.TextScaled = true
+FunctionsButton.Size = UDim2.new(0, 131,0, 82)
+FunctionsButton.Position = UDim2.new(0.749, 0,0.347, 0)
+FunctionsButton.FontFace.Weight = Enum.FontWeight.Bold
+FunctionsButton.Font = Enum.Font.Roboto
+FunctionsButton.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+FunctionsButton.FontFace.Style = Enum.FontStyle.Italic
+FunctionsButton.BackgroundTransparency = 0.2
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = FunctionsButton
+UIStroke.Thickness = 0.5
+UIStroke.Color = Color3.fromRGB(255, 255, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local SecondFunctionsButton = Instance.new("TextButton")
+SecondFunctionsButton.Name = "SecondFunctionsButton"
+SecondFunctionsButton.Parent = ScreenGui
+SecondFunctionsButton.Text = "Second Functions"
+SecondFunctionsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SecondFunctionsButton.TextScaled = true
+SecondFunctionsButton.Size = UDim2.new(0, 131,0, 82)
+SecondFunctionsButton.Position = UDim2.new(0.749, 0,0.424, 0)
+SecondFunctionsButton.FontFace.Weight = Enum.FontWeight.Bold
+SecondFunctionsButton.Font = Enum.Font.Roboto
+SecondFunctionsButton.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+SecondFunctionsButton.FontFace.Style = Enum.FontStyle.Italic
+SecondFunctionsButton.BackgroundTransparency = 0.2
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = SecondFunctionsButton
+UIStroke.Thickness = 0
+UIStroke.Color = Color3.fromRGB(255, 255, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local ParametersButton = Instance.new("TextButton")
+ParametersButton.Name = "ParametersButton"
+ParametersButton.Parent = ScreenGui
+ParametersButton.Text = "Parameters"
+ParametersButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ParametersButton.TextScaled = true
+ParametersButton.Size = UDim2.new(0, 131,0, 81)
+ParametersButton.Position = UDim2.new(0.749, 0,0.5, 0)
+ParametersButton.FontFace.Weight = Enum.FontWeight.Bold
+ParametersButton.Font = Enum.Font.Roboto
+ParametersButton.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+ParametersButton.FontFace.Style = Enum.FontStyle.Italic
+ParametersButton.BackgroundTransparency = 0.2
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = ParametersButton
+UIStroke.Thickness = 0
+UIStroke.Color = Color3.fromRGB(255, 255, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local FAQButton = Instance.new("TextButton")
+FAQButton.Name = "FAQButton"
+FAQButton.Parent = ScreenGui
+FAQButton.Text = "FAQ"
+FAQButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FAQButton.TextScaled = true
+FAQButton.Size = UDim2.new(0, 131,0, 81)
+FAQButton.Position = UDim2.new(0.749, 0,0.576, 0)
+FAQButton.FontFace.Weight = Enum.FontWeight.Bold
+FAQButton.Font = Enum.Font.Roboto
+FAQButton.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+FAQButton.FontFace.Style = Enum.FontStyle.Italic
+FAQButton.BackgroundTransparency = 0.2
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = FAQButton
+UIStroke.Thickness = 0
+UIStroke.Color = Color3.fromRGB(255, 255, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local MouseLock = Instance.new("TextButton")
+MouseLock.Name = "Close"
+MouseLock.Parent = ScreenGui
+MouseLock.Text = "Close"
+MouseLock.TextColor3 = Color3.fromRGB(255, 255, 255)
+MouseLock.TextScaled = true
+MouseLock.Size = UDim2.new(0, 200,0, 50)
+MouseLock.Position = UDim2.new(0.48, 0,0.674, 0)
+MouseLock.FontFace.Weight = Enum.FontWeight.Bold
+MouseLock.Font = Enum.Font.Roboto
+MouseLock.BackgroundColor3 = Color3.fromRGB(24, 24, 24)
+MouseLock.FontFace.Style = Enum.FontStyle.Italic
+MouseLock.BackgroundTransparency = 0.1
+
+local MouseLockTextButton = Instance.new("TextButton")
+MouseLockTextButton.Name = "MouseLockTextButton"
+MouseLockTextButton.Parent = ScreenGui
+MouseLockTextButton.Text = "MouseLock"
+MouseLockTextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+MouseLockTextButton.TextScaled = true
+MouseLockTextButton.BackgroundTransparency = 1
+MouseLockTextButton.Text = ""
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = MouseLock
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = Frame
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = CheatName
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Parent = CheatName
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke.Thickness = 3
+UIStroke.Color = Color3.fromRGB(0, 0, 0)
+UIStroke.LineJoinMode = Enum.LineJoinMode.Miter
+
+local WallhackLabel = Instance.new("TextLabel")
+WallhackLabel.Name = "WallHackLabel"
+WallhackLabel.Parent = Frame
+WallhackLabel.Text = "WallHack (I) <font color='#FF0000'>OFF</font>"
+WallhackLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+WallhackLabel.TextScaled = true
+WallhackLabel.Size = UDim2.new(0.3, 0,0.2, 0)
+WallhackLabel.Position = UDim2.new(0.03, 0,0.05, 0)
+WallhackLabel.FontFace.Weight = Enum.FontWeight.Bold
+WallhackLabel.BackgroundTransparency = 1
+WallhackLabel.RichText = true
+
+local Speedhacklabel = Instance.new("TextLabel")
+Speedhacklabel.Name = "SpeedHackLabel"
+Speedhacklabel.Parent = Frame
+Speedhacklabel.Text = "SpeedHack (J) <font color='#FF0000'>OFF</font>"
+Speedhacklabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+Speedhacklabel.TextScaled = true
+Speedhacklabel.Size = UDim2.new(0.3, 0,0.2, 0)
+Speedhacklabel.Position = UDim2.new(0.03, 0,0.25, 0)
+Speedhacklabel.FontFace.Weight = Enum.FontWeight.Bold
+Speedhacklabel.BackgroundTransparency = 1
+Speedhacklabel.RichText = true
+
+local savezonelabel = Instance.new("TextLabel")
+savezonelabel.Name = "SaveZoneLabel"
+savezonelabel.Parent = Frame
+savezonelabel.Text = "SaveZone (L) <font color='#FF0000'>OFF</font>"
+savezonelabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+savezonelabel.TextScaled = true
+savezonelabel.Size = UDim2.new(0.3, 0,0.2, 0)
+savezonelabel.Position = UDim2.new(0.03, 0,0.65, 0)
+savezonelabel.FontFace.Weight = Enum.FontWeight.Bold
+savezonelabel.BackgroundTransparency = 1
+savezonelabel.RichText = true
+
+local flylabel = Instance.new("TextLabel")
+flylabel.Name = "FlyLabel"
+flylabel.Parent = Frame
+flylabel.Text = "Fly (U) <font color='#FF0000'>OFF</font>"
+flylabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+flylabel.TextScaled = true
+flylabel.Size = UDim2.new(0.3, 0,0.2, 0)
+flylabel.Position = UDim2.new(0.03, 0,0.45, 0)
+flylabel.FontFace.Weight = Enum.FontWeight.Bold
+flylabel.BackgroundTransparency = 1
+flylabel.RichText = true
+
+local hvhweapons = Instance.new("TextLabel")
+hvhweapons.Name = "HvhWeaponslabel"
+hvhweapons.Parent = Frame
+hvhweapons.Text = "HVH Weapons (O) <font color='#FF0000'>OFF</font>"
+hvhweapons.TextColor3 = Color3.fromRGB(255, 255, 255)
+hvhweapons.TextScaled = true
+hvhweapons.Size = UDim2.new(0.3, 0,0.2, 0)
+hvhweapons.Position = UDim2.new(0.350, 0, 0.05, 0)
+hvhweapons.FontFace.Weight = Enum.FontWeight.Bold
+hvhweapons.BackgroundTransparency = 1
+hvhweapons.RichText = true
+
+local hvhaimbot = Instance.new("TextLabel")
+hvhaimbot.Name = "HvhAimbotlabel"
+hvhaimbot.Parent = Frame
+hvhaimbot.Text = "HVH Aimbot (F8) <font color='#FF0000'>OFF</font>"
+hvhaimbot.TextColor3 = Color3.fromRGB(255, 255, 255)
+hvhaimbot.TextScaled = true
+hvhaimbot.Size = UDim2.new(0.3, 0,0.2, 0)
+hvhaimbot.Position = UDim2.new(0.350, 0, 0.25, 0)
+hvhaimbot.FontFace.Weight = Enum.FontWeight.Bold
+hvhaimbot.BackgroundTransparency = 1
+hvhaimbot.RichText = true
+
+local doublejump = Instance.new("TextLabel")
+doublejump.Name = "DoubleJumplabel"
+doublejump.Parent = Frame
+doublejump.Text = "Double Jump (F6) <font color='#FF0000'>OFF</font>"
+doublejump.TextColor3 = Color3.fromRGB(255, 255, 255)
+doublejump.TextScaled = true
+doublejump.Size = UDim2.new(0.3, 0,0.2, 0)
+doublejump.Position = UDim2.new(0.350, 0, 0.45, 0)
+doublejump.FontFace.Weight = Enum.FontWeight.Bold
+doublejump.BackgroundTransparency = 1
+doublejump.RichText = true
+
+local nocliplabel = Instance.new("TextLabel")
+nocliplabel.Name = "Nocliplabel"
+nocliplabel.Parent = Frame
+nocliplabel.Text = "Noclip (F5) <font color='#FF0000'>OFF</font>"
+nocliplabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+nocliplabel.TextScaled = true
+nocliplabel.Size = UDim2.new(0.3, 0,0.2, 0)
+nocliplabel.Position = UDim2.new(0.350, 0, 0.65, 0)
+nocliplabel.FontFace.Weight = Enum.FontWeight.Bold
+nocliplabel.BackgroundTransparency = 1
+nocliplabel.RichText = true
+
+local legitaimbotlabel = Instance.new("TextLabel")
+legitaimbotlabel.Name = "LegitAimbotlabel"
+legitaimbotlabel.Parent = Frame
+legitaimbotlabel.Text = "Legit Aimbot (F10) <font color='#FF0000'>OFF</font>"
+legitaimbotlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+legitaimbotlabel.TextScaled = true
+legitaimbotlabel.Size = UDim2.new(0.3, 0,0.2, 0)
+legitaimbotlabel.Position = UDim2.new(0.650, 0, 0.05, 0)
+legitaimbotlabel.FontFace.Weight = Enum.FontWeight.Bold
+legitaimbotlabel.BackgroundTransparency = 1
+legitaimbotlabel.RichText = true
+
+local triggerbotlabel = Instance.new("TextLabel")
+triggerbotlabel.Name = "Triggerbotlabel"
+triggerbotlabel.Parent = Frame
+triggerbotlabel.Text = "Triggerbot (F4) <font color='#FF0000'>OFF</font>"
+triggerbotlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+triggerbotlabel.TextScaled = true
+triggerbotlabel.Size = UDim2.new(0.3, 0,0.2, 0)
+triggerbotlabel.Position = UDim2.new(0.650, 0, 0.25, 0)
+triggerbotlabel.FontFace.Weight = Enum.FontWeight.Bold
+triggerbotlabel.BackgroundTransparency = 1
+triggerbotlabel.RichText = true
+
+local hitboxlabel = Instance.new("TextLabel")
+hitboxlabel.Name = "Hitboxlabel"
+hitboxlabel.Parent = Frame
+hitboxlabel.Text = "Hitbox (F7) <font color='#FF0000'>OFF</font>"
+hitboxlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+hitboxlabel.TextScaled = true
+hitboxlabel.Size = UDim2.new(0.3, 0,0.2, 0)
+hitboxlabel.Position = UDim2.new(0.650, 0, 0.45, 0)
+hitboxlabel.FontFace.Weight = Enum.FontWeight.Bold
+hitboxlabel.BackgroundTransparency = 1
+hitboxlabel.RichText = true
+
+local fovlabel = Instance.new("TextLabel")
+fovlabel.Name = "FOVlabel"
+fovlabel.Parent = Frame
+fovlabel.Text = "FOV:"
+fovlabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fovlabel.TextScaled = true
+fovlabel.Size = UDim2.new(0.3, 0,0.2, 0)
+fovlabel.Position = UDim2.new(0.600, 0, 0.65, 0)
+fovlabel.FontFace.Weight = Enum.FontWeight.Bold
+fovlabel.BackgroundTransparency = 1
+fovlabel.RichText = true
+
+local fovtextbox = Instance.new("TextBox")
+fovtextbox.Name = "FOVTextBox"
+fovtextbox.Parent = Frame
+fovtextbox.Text = fov
+fovtextbox.TextColor3 = Color3.fromRGB(242, 255, 0)
+fovtextbox.TextScaled = true
+fovtextbox.Size = UDim2.new(0.1, 0,0.2, 0)
+fovtextbox.Position = UDim2.new(0.850, 0, 0.65, 0)
+fovtextbox.FontFace.Weight = Enum.FontWeight.Bold
+fovtextbox.BackgroundTransparency = 1
+fovtextbox.TextEditable = true
+fovtextbox.TextXAlignment = Enum.TextXAlignment.Left
+fovtextbox.TextEditable = true
+
+fovtextbox.FocusLost:Connect(function()
+	local newfov = tonumber(fovtextbox.Text)
+	
+	if typeof(newfov) == "number" then
+		fov = newfov
+	end
+end)
+
+RS.Heartbeat:Connect(function()
+	fovlabel.Text = "FOV:"
+	camera.FieldOfView = fov
+end)
+
+local weapons = RS2:FindFirstChild("Weapons") or RS2:FindFirstChild("Guns") or RS2:FindFirstChild("GunStats")
+local savedValues = {}
+
+if not weapons then
+	for _, v in pairs(RS2:GetChildren()) do
+		task.wait()
+		if v:IsA("Folder") and (v:FindFirstChild("AK47") or v:FindFirstChild("M4")) then
+			weapons = v
+			break
+		end
+	end
+end
+
+RS.Heartbeat:Connect(function()
+	
+	if ThirteenthTrigger == true then
+	
+		for _, plrs in pairs(game.Players:GetPlayers()) do
+
+			if plrs.Name == game.Players.LocalPlayer.Name then continue end
+
+			local char = plrs.Character or plrs.CharacterAdded:Wait()
+
+			local head = char:FindFirstChild("Head")
+
+			if head then
+				head.Size = Vector3.new(6, 6, 6)
+				head.Transparency = 0.5
+				head.CanCollide = false
+			end
+		end
+	else
+		for _, plrs in pairs(game.Players:GetPlayers()) do
+			local char = plrs.Character or plrs.CharacterAdded:Wait()
+			local head = char:FindFirstChild("Head")
+			if head then
+				head.Size = Vector3.new(1, 1, 1)
+				head.Transparency = 0
+				head.CanCollide = true
+			end
+		end
+	end
+end)
+
+RS.Heartbeat:Connect(function()
+	if TwelvethTrigger == true then
+		local target = mouse.Target
+		if target and target.Parent then
+			local humanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+			if humanoid and humanoid.Health > 0 then
+				local targetPlayer = game.Players:GetPlayerFromCharacter(target.Parent)
+				if targetPlayer then
+					if teamCheck == true and game.Players.LocalPlayer.Team and targetPlayer.Team == game.Players.LocalPlayer.Team then
+						return
+					end
+					task.wait()
+					local VirtualInput = game:GetService("VirtualInputManager")
+					VirtualInput:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+					task.wait()
+					VirtualInput:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+				end
+			end
+		end
+	end
+end)
+
+local function isVisible(part)
+	if not wallCheck then return true end
+
+	local rayParams = RaycastParams.new()
+	rayParams.FilterType = Enum.RaycastFilterType.Exclude
+	rayParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+
+	local origin = camera.CFrame.Position
+	local direction = part.Position - origin
+	local result = workspace:Raycast(origin, direction, rayParams)
+
+	if result then
+		return result.Instance:IsDescendantOf(part.Parent)
+	end
+	return true
+end
+local function getClosestEnemy()
+	local closest = nil
+	local shortestDist = math.huge
+	local center = Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)
+	local myTeam = game.Players.LocalPlayer.Team
+
+	for _, other in ipairs(game.Players:GetPlayers()) do
+		local character = other.Character
+		local myPlayer = game.Players.LocalPlayer
+
+		if other ~= myPlayer and character then
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			local isFriendly = (teamCheck and myTeam and other.Team == myTeam)
+
+			if humanoid and humanoid.Health > 0 and not isFriendly then
+				local targetPart = character:FindFirstChild("HeadHB") or character:FindFirstChild("Head")
+
+				if targetPart then
+					local screenPos, onScreen = camera:WorldToViewportPoint(targetPart.Position)
+
+					if onScreen then
+						local screenDist = (Vector2.new(screenPos.X, screenPos.Y) - center).Magnitude
+						local worldDist = (targetPart.Position - camera.CFrame.Position).Magnitude
+
+						if screenDist <= aimbotfov and worldDist <= maxDistance and isVisible(targetPart) then
+							if screenDist < shortestDist then
+								shortestDist = screenDist
+								closest = targetPart
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return closest
+end
+
+
+
+local function Hitbox(stat)
+	if stat == true then
+		
+	end
+end
+
+local function Aimbot(stat, mode)
+	if stat == true and not NinthTrigger then
+		NinthTrigger = true
+
+		if mode == "rage" then
+			smoothness = 1.5
+			aimbotfov = 1000
+			wallCheck = true
+			TargetPart = "Head"
+		elseif mode == "legit" then
+			smoothness = 0.07
+			aimbotfov = 20
+			wallCheck = true
+			TargetPart = "UpperTorso"
+		else
+			smoothness = 0.07
+			aimbotfov = 360
+			wallCheck = true
+			TargetPart = "UpperTorso"
+		end
+
+		if connection then
+			connection:Disconnect()
+			connection = nil
+		end
+
+		connection = RS.RenderStepped:Connect(function()
+			if not NinthTrigger then return end
+			local target = getClosestEnemy()
+			if target then
+				local targetPos = target.Position
+				local currentPos = camera.CFrame.Position
+				local lookAt = CFrame.lookAt(currentPos, targetPos)
+
+				camera.CFrame = camera.CFrame:Lerp(lookAt, smoothness)
+			end
+		end)
+
+	elseif stat == false and NinthTrigger then
+		NinthTrigger = false
+		if connection then
+			connection:Disconnect()
+			connection = nil
+		end
+	end
+end
+
+local function setCheatsValues()
+	if not weapons then return end
+	for _, weapon in pairs(weapons:GetChildren()) do
+		task.wait()
+		for _, stats in pairs(weapon:GetDescendants()) do
+			for _, v in pairs(stats:GetDescendants()) do
+				if v:IsA("NumberValue") then
+					if v.Name == "FireRate" and v.Value ~= 0.01 then
+						v.Value = 0.01
+					end
+					if v.Name == "ReloadTime" and v.Value ~= 0.1 then
+						v.Value = 0.01
+					end
+					if v.Name == "Spread" and v.Value ~= 0 then
+						v.Value = 0
+					end
+					if v.Name == "StoredAmmo" then
+						v.Value = 9999
+					end
+					if (v.Name == "DMG" or v.Name == "Damage") and v.Value ~= 9999 then
+						v.Value = 9999
+					end
+					if v.Name == "EquipTime" and v.Value ~= 0 then
+						v.Value = 0
+					end
+					if v.Name == "Tagging" and v.Value ~= 0 then
+						v.Value = 0
+					end
+					if (v.Name == "Range" or v.Name == "RangeModifier") and v.Value ~= 99999 then
+						v.Value = 99999
+					end
+					if (v.Name == "ArmorPenetration" or v.Name == "Penetration") and v.Value ~= 100 then
+						v.Value = 100
+					end
+					if v.Name == "KillAward" and v.Value ~= 0 then
+						v.Value = 0
+					end
+					if v.Name == "Crouch" or v.Name == "Fire" or v.Name == "InitialJump" or v.Name == "Jump" or v.Name == "Ladder" or v.Name == "Land" or v.Name == "Move" or v.Name == "Recoil" or v.Name == "Stand" or v.Name == "Crouched" or v.Name == "RecoveryTime" then
+						if v.Value ~= 0 then
+							v.Value = 0
+						end
+					end
+				elseif v:IsA("Vector3Value") and v.Name == "Recoil" and v.Value.Magnitude > 0 then
+					v.Value = Vector3.new(0,0,0)
+				elseif v:IsA("BoolValue") and v.Name == "Auto" and v.Value ~= true then
+					v.Value = true
+				end
+			end
+		end
+	end
+end
+
+local function saveOriginalValues()
+	if not weapons then return end
+	for _, weapon in pairs(weapons:GetChildren()) do
+		task.wait()
+		for _, v in pairs(weapon:GetDescendants()) do
+			task.wait()
+			if v:IsA("NumberValue") or v:IsA("Vector3Value") or v:IsA("BoolValue") then
+				local path = v:GetFullName()
+				savedValues[path] = {type = v.ClassName, value = v.Value}
+			end
+		end
+	end
+end
+
+local function restoreOriginalValues()
+	if not weapons then return end
+	for _, weapon in pairs(weapons:GetChildren()) do
+		for _, v in pairs(weapon:GetDescendants()) do
+			if v:IsA("NumberValue") or v:IsA("Vector3Value") or v:IsA("BoolValue") then
+				local path = v:GetFullName()
+				if savedValues[path] then
+					v.Value = savedValues[path].value
+				end
+			end
+		end
+	end
+end
+
+local function UltraMode(stat)
+	if stat == true then
+		setCheatsValues()
+	else
+		restoreOriginalValues()
+	end
+end
+
+local function Fly(stat)
+	local char = game.Players.LocalPlayer.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart")
+	local humanoid = char and char:FindFirstChild("Humanoid")
+	if not hrp or not humanoid then return end
+
+	if stat == true and fly == false then
+		fly = true
+
+		local savedPos = hrp.CFrame
+
+		OriginalJumpPower = humanoid.JumpPower or humanoid.JumpHeight
+		OriginalSpeed = humanoid.WalkSpeed
+
+		humanoid.UseJumpPower = false
+		humanoid.JumpPower = 0
+		humanoid.WalkSpeed = 0
+
+		for _, v in pairs(char:GetDescendants()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = false
+			end
+		end
+
+		hrp.CFrame = savedPos
+		hrp.Anchored = true
+
+		RS.Heartbeat:Connect(function()
+			if fly == true then
+				hrp.CFrame = CFrame.new(hrp.Position, camera.CFrame.Position * Vector3.new(1, 0, 1) + Vector3.new(0, hrp.Position.Y, 0))
+
+				local move = Vector3.new(0, 0, 0)
+				local cameraLook = camera.CFrame.LookVector * Vector3.new(1, 0, 1)
+				local cameraRight = camera.CFrame.RightVector * Vector3.new(1, 0, 1)
+
+				if UIS:IsKeyDown(Enum.KeyCode.W) then
+					move = move + (cameraLook * 0.5)
+				end
+				if UIS:IsKeyDown(Enum.KeyCode.S) then
+					move = move + (cameraLook * -0.5)
+				end
+				if UIS:IsKeyDown(Enum.KeyCode.A) then
+					move = move + (cameraRight * -0.5)
+				end
+				if UIS:IsKeyDown(Enum.KeyCode.D) then
+					move = move + (cameraRight * 0.5)
+				end
+				if UIS:IsKeyDown(Enum.KeyCode.Space) then
+					move = move + Vector3.new(0, 0.5, 0)
+				end
+				if UIS:IsKeyDown(Enum.KeyCode.LeftShift) then
+					move = move + Vector3.new(0, -0.5, 0)
+				end
+
+				hrp.CFrame = hrp.CFrame + move
+			end
+		end)
+
+	elseif stat == false and fly == true then
+		fly = false
+		hrp.Anchored = false
+		humanoid.UseJumpPower = true
+		humanoid.JumpPower = OriginalJumpPower
+		humanoid.WalkSpeed = OriginalSpeed
+		humanoid.JumpHeight = OriginalJumpPower
+
+		for _, v in pairs(char:GetDescendants()) do
+			if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+				v.CanCollide = true
+			end
+		end
+	end
+end
+
+local function DoubleJump(stat)
+	if stat == true then
+		CanDoubleJump = true
+	else
+		CanDoubleJump = false
+	end
+end
+
+local function WallHack(stat)
+	if stat == true then
+		if not game.SoundService:FindFirstChild("HighLightFolder") then
+			Instance.new("Folder", game.SoundService).Name = "HighLightFolder"
+		end
+
+		local highlightFolder = game.SoundService.HighLightFolder
+
+		for _, player in ipairs(game.Players:GetPlayers()) do
+			local Character = player.Character
+			if Character then
+				local head = Character:FindFirstChild("Head")
+				if head then
+					local teamColor = Color3.new(1, 1, 1)
+					if player.Team then
+						teamColor = player.Team.TeamColor.Color
+					end
+
+					local highlightName = player.Name .. "_Highlight"
+					local existingHighlight = highlightFolder:FindFirstChild(highlightName)
+
+					if not existingHighlight then
+						local Highlight = Instance.new("Highlight")
+						Highlight.Name = highlightName
+						Highlight.Parent = highlightFolder
+						Highlight.Adornee = Character
+						Highlight.FillTransparency = 1
+						Highlight.OutlineColor = teamColor
+						Highlight.OutlineTransparency = 0
+						Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+					else
+						existingHighlight.Adornee = Character
+						existingHighlight.OutlineColor = teamColor
+					end
+
+					local existingBillboard = head:FindFirstChild("PlayerBillboard")
+
+					if not existingBillboard then
+						local BillboardGui = Instance.new("BillboardGui")
+						BillboardGui.Name = "PlayerBillboard"
+						BillboardGui.Size = UDim2.new(0, 200, 0, 40)
+						BillboardGui.ExtentsOffset = Vector3.new(0, 3, 0)
+						BillboardGui.AlwaysOnTop = true
+						BillboardGui.Adornee = head
+						BillboardGui.Parent = head
+						BillboardGui.MaxDistance = math.huge
+
+						local MainFrame = Instance.new("Frame")
+						MainFrame.Name = "MainFrame"
+						MainFrame.Size = UDim2.new(1, 0, 1, 0)
+						MainFrame.BackgroundTransparency = 1
+						MainFrame.Parent = BillboardGui
+
+						local NameLabel = Instance.new("TextLabel")
+						NameLabel.Name = "PlayerNameLabel"
+						NameLabel.Size = UDim2.new(0.65, 0, 1, 0)
+						NameLabel.Position = UDim2.new(0, 0, 0, 0)
+						NameLabel.AnchorPoint = Vector2.new(0, 0)
+						NameLabel.BackgroundTransparency = 1
+						NameLabel.Text = player.Name
+						NameLabel.TextColor3 = teamColor
+						NameLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+						NameLabel.TextStrokeTransparency = 0
+						NameLabel.TextSize = 12
+						NameLabel.Font = Enum.Font.GothamBold
+						NameLabel.TextXAlignment = Enum.TextXAlignment.Left
+						NameLabel.TextYAlignment = Enum.TextYAlignment.Center
+						NameLabel.Parent = MainFrame
+
+						local HealthLabel = Instance.new("TextLabel")
+						HealthLabel.Name = "HealthLabel"
+						HealthLabel.Size = UDim2.new(0.35, 0, 1, 0)
+						HealthLabel.Position = UDim2.new(0.65, 0, 0, 0)
+						HealthLabel.AnchorPoint = Vector2.new(0, 0)
+						HealthLabel.BackgroundTransparency = 1
+						HealthLabel.Text = "100"
+						HealthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+						HealthLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+						HealthLabel.TextStrokeTransparency = 0
+						HealthLabel.TextSize = 12
+						HealthLabel.Font = Enum.Font.GothamBold
+						HealthLabel.TextXAlignment = Enum.TextXAlignment.Right
+						HealthLabel.TextYAlignment = Enum.TextYAlignment.Center
+						HealthLabel.Parent = MainFrame
+
+						local function updateHealthDisplay()
+							local humanoid = Character:FindFirstChild("Humanoid")
+							if humanoid and HealthLabel then
+								local health = math.floor(humanoid.Health)
+								local maxHealth = math.floor(humanoid.MaxHealth)
+								HealthLabel.Text = health
+
+								local healthPercent = health / maxHealth
+								if healthPercent >= 0.7 then
+									HealthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+								elseif healthPercent >= 0.3 then
+									HealthLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+								else
+									HealthLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+								end
+							end
+						end
+
+						local humanoid = Character:FindFirstChild("Humanoid")
+						if humanoid then
+							humanoid.HealthChanged:Connect(function()
+								updateHealthDisplay()
+							end)
+
+							humanoid.Died:Connect(function()
+								if BillboardGui and BillboardGui.Parent then
+									BillboardGui:Destroy()
+								end
+							end)
+
+							updateHealthDisplay()
+						end
+
+					else
+						existingBillboard.Adornee = head
+						local nameLabel = existingBillboard.MainFrame:FindFirstChild("PlayerNameLabel")
+						if nameLabel then
+							nameLabel.TextColor3 = teamColor
+						end
+
+						local humanoid = Character:FindFirstChild("Humanoid")
+						local healthLabel = existingBillboard.MainFrame:FindFirstChild("HealthLabel")
+						if humanoid and healthLabel then
+							local health = math.floor(humanoid.Health)
+							healthLabel.Text = health
+
+							local maxHealth = math.floor(humanoid.MaxHealth)
+							local healthPercent = health / maxHealth
+							if healthPercent >= 0.7 then
+								healthLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+							elseif healthPercent >= 0.3 then
+								healthLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+							else
+								healthLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+							end
+						end
+					end
+				end
+			end
+		end
+
+	else
+		local highlightFolder = game.SoundService:FindFirstChild("HighLightFolder")
+		if highlightFolder then 
+			highlightFolder:Destroy() 
+		end
+
+		for _, player in ipairs(game.Players:GetPlayers()) do
+			if player.Character then
+				local head = player.Character:FindFirstChild("Head")
+				if head then
+					local billboard = head:FindFirstChild("PlayerBillboard")
+					if billboard then
+						billboard:Destroy()
+					end
+				end
+			end
+		end
+	end
+end
+
+local function SafeZone(stat)
+	if stat == true then
+		SafeMode = true
+
+		hpriority = true
+		local char = game.Players.LocalPlayer.Character
+		local hrp = char.HumanoidRootPart
+		OriginalPosition = hrp.CFrame
+
+		local TouchedAdded = false
+
+		if TouchedAdded == false then
+			TouchedAdded = true
+			for _, v in ipairs(char:GetChildren()) do
+				if v:IsA("BasePart") then
+					v.Touched:Connect(function(hit)
+						if SafeMode == true and hit:IsA("BasePart") then
+							hit.CanCollide = false
+							task.wait(1)
+							hit.CanCollide = true
+							hrp.Anchored = true
+							hpriority = false
+						end
+					end)
+				end
+			end
+		end
+	else
+		if hpriority == false then
+			SafeMode = false
+
+			local char = game.Players.LocalPlayer.Character
+			local hrp = char.HumanoidRootPart
+			hrp.Anchored = false
+
+			hrp.CFrame = OriginalPosition
+		end
+	end
+end
+
+local function Noclip(stat)
+	local tableuncancollideparts = {}
+	if stat == true then
+		for _, v in ipairs(game.Players.LocalPlayer.Character:GetChildren()) do
+			if v:IsA("BasePart") then
+				v.Touched:Connect(function(hit)
+					if EleventhTrigger == true then
+						if hit:IsA("BasePart") then
+							hit.CanCollide = false
+							table.insert(tableuncancollideparts, hit)
+						end
+					else
+						for _, hit in ipairs(tableuncancollideparts) do
+							hit.CanCollide = true
+						end
+						tableuncancollideparts = {}
+					end
+				end)
+			end
+		end
+	else
+		for _, hit in ipairs(tableuncancollideparts) do
+			hit.CanCollide = true
+		end
+		tableuncancollideparts = {}
+	end
+end
+
+local function SpeedHack(stat)
+	local Humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
+	if Humanoid and stat == true then
+		task.spawn(function()
+			while task.wait(0.01) do
+				if SecondTrigger == true then
+					Humanoid.WalkSpeed = 50
+				end
+			end
+		end)
+	elseif Humanoid and stat == false then
+		Humanoid.WalkSpeed = 16
+	end
+end
+
+UIS.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed or End == true then return end
+
+	if input.KeyCode == Enum.KeyCode.I and Trigger == false then
+		local Folder = Instance.new("Folder")
+		Folder.Name = "HighLightFolder"
+		Folder.Parent = game.SoundService
+		WallHack(true)
+		Trigger = true
+		WallhackLabel.Text = "WallHack (I) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.I and Trigger == true then
+		Trigger = false
+		WallhackLabel.Text = "WallHack (I) <font color='#FF0000'>OFF</font>"
+		WallHack(false)
+	elseif input.KeyCode == Enum.KeyCode.J and SecondTrigger == false then
+		SpeedHack(true)
+		Speedhacklabel.Text = "SpeedHack (J) <font color='#00FF00'>ON</font>"
+		SecondTrigger = true
+	elseif input.KeyCode == Enum.KeyCode.J and SecondTrigger == true then
+		SpeedHack(false)
+		Speedhacklabel.Text = "SpeedHack (J) <font color='#FF0000'>OFF</font>"
+		SecondTrigger = false
+	elseif input.KeyCode == Enum.KeyCode.O and EightthTrigger == false then
+		--UltraMode(true)
+		hvhweapons.Text = "HVH Weapons (O) <font color='#00FF00'>ON</font>"
+		EightthTrigger = true
+	elseif input.KeyCode == Enum.KeyCode.O and EightthTrigger == true then
+		--UltraMode(false)
+		hvhweapons.Text = "HVH Weapons (O) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.F8 and NinthTrigger == false then
+		Aimbot(true, "rage")
+		NinthTrigger = true
+		hvhaimbot.Text = "HVH Aimbot (F8) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.F8 and NinthTrigger == true then
+		Aimbot(false)
+		NinthTrigger = false
+		hvhaimbot.Text = "HVH Aimbot (F8) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.F10 and NinthTrigger == false then
+		Aimbot(true, "legit")
+		NinthTrigger = true
+		legitaimbotlabel.Text = "Legit Aimbot (F10) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.F10 and NinthTrigger == true then
+		Aimbot(false)
+		NinthTrigger = false
+		legitaimbotlabel.Text = "Legit Aimbot (F10) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.F6 and TenthTrigger == false then
+		DoubleJump(true)
+		TenthTrigger = true
+		doublejump.Text = "Double Jump (F6) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.F6 and TenthTrigger == true then
+		DoubleJump(false)
+		TenthTrigger = false
+		doublejump.Text = "Double Jump (F6) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.F5 and EleventhTrigger == false then
+		Noclip(true)
+		EleventhTrigger = true
+		nocliplabel.Text = "Noclip (F5) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.F5 and EleventhTrigger == true then
+		Noclip(false)
+		EleventhTrigger = false
+		nocliplabel.Text = "Noclip (F5) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.F4 and TwelvethTrigger == false then
+		TwelvethTrigger = true
+		triggerbotlabel.Text = "Triggerbot (F4) <font color='#00FF00'>ON</font>"
+	elseif input.KeyCode == Enum.KeyCode.F4 and TwelvethTrigger == true then
+		TwelvethTrigger = false
+		triggerbotlabel.Text = "Triggerbot (F4) <font color='#FF0000'>OFF</font>"
+	elseif input.KeyCode == Enum.KeyCode.Insert and ScreenGui.Enabled == true then
+		ScreenGui.Enabled = false
+	elseif input.KeyCode == Enum.KeyCode.F7 and ThirteenthTrigger == false then
+		ThirteenthTrigger = true
+		hitboxlabel.Text = "Hitbox (F7) <font color='#00FF00'>ON</font>"
+		Hitbox(true)
+	elseif input.KeyCode == Enum.KeyCode.F7 and ThirteenthTrigger == true then
+		ThirteenthTrigger = false
+		hitboxlabel.Text = "Hitbox (F7) <font color='#FF0000'>OFF</font>"
+		Hitbox(false)
+	elseif input.KeyCode == Enum.KeyCode.Insert and ScreenGui.Enabled == false then
+		ScreenGui.Enabled = true
+	elseif input.KeyCode == Enum.KeyCode.Delete then
+		End = true
+		game.Players.LocalPlayer.PlayerGui:FindFirstChild("CheatGui"):Destroy()
+		if Trigger == true then
+			WallHack(false)
+		end
+		if SecondTrigger == true then
+			SpeedHack(false)
+		end
+		if EightthTrigger == true then
+			UltraMode(false)
+		end
+		if SeventhTrigger == true then
+			--Fly(false)
+		end
+		if SixthTrigger == true then
+			SafeZone(false)
+		end
+	elseif input.KeyCode == Enum.KeyCode.L and SixthTrigger == false then
+		SafeZone(true)
+		savezonelabel.Text = "SafeZone (L) <font color='#00FF00'>ON</font>"
+		SixthTrigger = true
+	elseif input.KeyCode == Enum.KeyCode.L and SixthTrigger == true then
+		SafeZone(false)
+		savezonelabel.Text = "SafeZone (L) <font color='#FF0000'>OFF</font>"
+		SixthTrigger = false
+	elseif input.KeyCode == Enum.KeyCode.U and SeventhTrigger == false then
+		--Fly(true)
+		flylabel.Text = "Fly (U) <font color='#00FF00'>ON</font>"
+		SeventhTrigger = true
+	elseif input.KeyCode == Enum.KeyCode.U and SeventhTrigger == true then
+		--Fly(false)
+		flylabel.Text = "Fly (U) <font color='#FF0000'>OFF</font>"
+		SeventhTrigger = false
+	end
+end)
+
+UIS.InputBegan:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.Space then
+		jumping = true
+	end
+end)
+
+local function setupPlayerTracking(player)
+	player:GetPropertyChangedSignal("Team"):Connect(function()
+		if Trigger == true and End == false then
+			WallHack(true)
+		end
+	end)
+
+	player.CharacterAdded:Connect(function()
+		if Trigger == true and End == false then
+			task.wait(1)
+			WallHack(true)
+		end
+	end)
+end
+
+for _, player in ipairs(game.Players:GetPlayers()) do
+	setupPlayerTracking(player)
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+	setupPlayerTracking(player)
+	if Trigger == true and End == false then
+		task.wait(1)
+		WallHack(true)
+	end
+end)
+
+UIS.InputEnded:Connect(function(input)
+	if input.KeyCode == Enum.KeyCode.Space then
+		jumping = false
+	end
+end)
+
+
+RS.Heartbeat:Connect(function()
+	if jumping == true then
+		local humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
+		if humanoid then
+			if humanoid.FloorMaterial ~= Enum.Material.Air then
+				humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			else
+				if CanDoubleJump == true then
+					humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+				end
+			end
+		end
+	end
+
+	if ScreenGui.Enabled == true then
+		MouseLockTextButton.Modal = true
+	else
+		MouseLockTextButton.Modal = false
+	end
+end)
+
+local function DisableAllFrame()
+	Frame.Visible = false
+	SecondFrame.Visible = false
+	ThirdFrame.Visible = false
+	FourthFrame.Visible = false
+	FunctionsButton:FindFirstChild("UIStroke").Thickness = 0
+	SecondFunctionsButton:FindFirstChild("UIStroke").Thickness = 0
+	ParametersButton:FindFirstChild("UIStroke").Thickness = 0
+	FAQButton:FindFirstChild("UIStroke").Thickness = 0
+end
+
+MouseLock.MouseButton1Click:Connect(function()
+	ScreenGui.Enabled = false
+end)
+
+FunctionsButton.MouseButton1Click:Connect(function()
+	DisableAllFrame()
+	Frame.Visible = true
+	FunctionsButton:FindFirstChild("UIStroke").Thickness = 0.5
+end)
+
+SecondFunctionsButton.MouseButton1Click:Connect(function()
+	DisableAllFrame()
+	SecondFrame.Visible = true
+	SecondFunctionsButton:FindFirstChild("UIStroke").Thickness = 0.5
+end)
+
+ParametersButton.MouseButton1Click:Connect(function()
+	DisableAllFrame()
+	ThirdFrame.Visible = true
+	ParametersButton:FindFirstChild("UIStroke").Thickness = 0.5
+end)
+
+FAQButton.MouseButton1Click:Connect(function()
+	DisableAllFrame()
+	FourthFrame.Visible = true
+	FAQButton:FindFirstChild("UIStroke").Thickness = 0.5
+end)
+
+task.wait(3)
+saveOriginalValues()
